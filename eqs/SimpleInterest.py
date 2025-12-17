@@ -1,7 +1,18 @@
 from datetime import date, datetime
 from typing import Union
 
-
+class SimpleInterest:
+    @staticmethod
+    def solve(cv: float, r: float, n: float) -> float:
+        """
+        计算单利终值
+        :param cv: 现值 
+        :param r: 年利率
+        :param n: 期数
+        :return: 终值
+        """
+        fv = cv + (cv * r * n) / 100
+        return fv
 
 class problem1:
     @staticmethod
