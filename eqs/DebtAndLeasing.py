@@ -15,66 +15,95 @@ class DebtLeasing:
         return I
 
 class problem1:
-    def solve(P=1300,r=0.11,t=1.5,n=18):
-        I = P*r*t
-        PYT=((P + I)/n)
-        return PYT
-    
-    def solveMIP(P=1300,r=0.11,t=1.5,n=18):
-        I = P*r*t
-        MIP = I/n
-        return MIP
-    
-    def solveMPP(P=1300,r=0.11,t=1.5,n=18):
+    def solve(P=1300,r=11,t=1.5,n=18):
+        r=r/100
         I = P*r*t
         PYT=((P + I)/n)
         MIP = I/n
         MPP=PYT-MIP
-        return MPP
-    
+        return PYT, MIP, MPP
+
 class problem6:
     def solveD(n=42):
         D=(n*(n+1))/2
         return D
     
 class problem9:
-    def solveLeft(cv=4500,r=0.07,n=3,N=36,P=4500,times=20):
-        I=cv*r*n
-        PYT=((P+I)/N)
-        MIP=I/N
-        PPM=PYT-MIP
-        Left=cv-PPM*times
+    def solveLeft(P=4500,r=7,t=3,n=36,times=20):
+        r=r/100
+        PYT, MIP, MPP = problem1.solve(P=P,r=r,t=t,n=n)
+        Left=P-MPP*times
         return Left
     
 class problem10:
-    def parallel(P=2000,r=0.095,t=1):
-        I=P*r*t
-        return I
-    
-    def SevenEight(N=18,cv=2000,r=0.095,n=1.5):
-        D=(N*(N+1))/2
-        I=cv*r*n
-        MIP=((7+8+9+10+11+12+13+14+15+16+17+18)/D)*I#一年半的后一年，也就是前6年不算
-        return MIP
+    def Parallel(P=2000,r=9.5,t=18/12,n=18,times=12):
+        
+        PYT, MIP, MPP = problem1.solve(P=P,r=r,t=t,n=n)
+        Left=P-MPP*times
+        PaidI= MIP*times
+        return Left, PaidI
+        
+    def SevenEight(P=2000,r=9.5,t=18/12,n=18,times=12,result='result'):
+        r=r/100
+        D = problem6.solveD(n=n)
+        K_i = []
+        for i in range(1, n + 1):
+            K_i.append((n - i + 1)/D)
+        
+        I = P * r * t
+        MIP_i = []
+        for i in range(1,n+1):
+            MIP_i.append(I * K_i[i-1])
+
+        PYT=((P + I)/n)
+        MPP_i = []
+        for i in range(1,n+1):
+            MPP_i.append(PYT - MIP_i[i-1])
+        
+        if result == 'list':
+            return MIP_i, MPP_i
+        
+        elif result == 'result':
+            Left=P
+            for i in range(times):
+                Left=Left-MPP_i[i]
+
+            PaidI=0
+            for i in range(times):
+                PaidI=PaidI+MIP_i[i]
+            
+            return Left, PaidI
+
+        else: NameError("result=result,result=list")
+        
 
 class problem13:
-    def half(P=3400,r=0.065,n=8):#n是按半年结算的t所以是2倍
-        I=P*0.5*r*n#由于是半年所以r乘0.5？
-        PYT=((P+I)/n)
-        return PYT
+    def solve(P=3400,r=6.5,t=8,frequency=2):
+        """
+        计算每期支付额
+        :param P: 贷款金额
+        :param r: 年利率
+        :param t: 贷款时间,单位:年
+        :param frequency: 每年还款次数
+        """
+        r=r/100
+        n=frequency*t
+        I = P*r*t
+        PYT= P*(1+(r/frequency)*n)/n
+        return PYT , I
     
-    def total(cv=3400,r=0.065,t=4):#此处cv=P即3400美元的贷款
-        I=cv*r*t
-        return I
     
 class problem14:
-    def Pay4Time(P=3750,unpay=0.02,i=0.1975,m=12,year=1):
+    def Pay4Time(P=3750,unpay=2,i=19.75,m=12,year=1):
+        unpay=unpay/100
+        i=i/100
         PYT=P*unpay
         r=i/m
         MIP=P*r*year
         MPP=PYT-MIP
-        n=P/MPP
-        return n
+        PPT=P/MPP
+        ALLI = MIP*PPT
+        return PPT , ALLI
     
 class problem17:
     def Debt(total=85000,ATP=19550,MM=1850,CC1=320,CC2=190,PL=226,DS=65):
