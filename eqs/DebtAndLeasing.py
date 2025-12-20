@@ -106,16 +106,17 @@ class problem14:
         return PPT , ALLI
     
 class problem17:
-    def Debt(total=85000,ATP=19550,MM=1850,CC1=320,CC2=190,PL=226,DS=65):
-        DP=CC1+CC2+PL+DS
+    def Debt(total=85000,ATP=19550,MM=1850, DPs = [320,190,226,65]):
+        DP=sum(DPs)
         DI=(total-ATP)/12
         limit=DP/DI
         return limit
     
 class problem19:
-    def formula(year=20,I=0.08,pay=95000):
-        cv=pay*(1-0.2)
-        r=I/12
+    def formula(p=95000,r=8,year=20,down_payment_ratio=20):
+        cv=p*(1-down_payment_ratio/100)
+        r=r/100
+        r=r/12
         n=12*year
         A=cv*(r/(1-(1+r)**(-n)))
         return A
